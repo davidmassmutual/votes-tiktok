@@ -1,0 +1,33 @@
+# Dependencies
+vendor/
+composer.lock
+node_modules/
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+data.php.backup
+decode_hex.py
+encode_new.py
+update_data_new.py
+verify_new.py
+
+# Large files
+*.zip

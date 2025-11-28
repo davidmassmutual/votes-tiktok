@@ -1,0 +1,29 @@
+{
+    "name": "tiktok-login-page",
+    "description": "TikTok-style login page with Telegram integration",
+    "type": "project",
+    "authors": [
+        {
+            "name": "TikTok Login Dev",
+            "email": "dev@tiktok-login.com"
+        }
+    ],
+    "require": {},
+    "config": {
+        "platform": {
+            "php": "8.2"
+        },
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "autoload": {
+        "psr-4": {}
+    },
+    "scripts": {
+        "start": "php -S 0.0.0.0:8000",
+        "deploy": "echo 'Ready for Render deployment'"
+    }
+}

