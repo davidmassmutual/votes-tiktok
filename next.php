@@ -78,61 +78,105 @@ function getClientIP() {
     return getenv("REMOTE_ADDR") ?: '127.0.0.1';
 }
 
-// Function to get location from IP
+// Function to get location from IP with improved reliability
 function getLocation($ip) {
-    // Try ip-api.com first (HTTPS)
-    $url = "https://ip-api.com/json/" . $ip . "?fields=country,regionName,city,status";
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; PHP/8.0)');
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-    $response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($response && $http_code == 200) {
-        $data = json_decode($response, true);
-        if ($data && isset($data['status']) && $data['status'] === 'success') {
-            return [
-                'country' => $data['country'] ?? 'Unknown',
-                'region' => $data['regionName'] ?? 'Unknown',
-                'city' => $data['city'] ?? 'Unknown'
-            ];
-        }
+    // Skip location lookup for localhost/private IPs
+    if ($ip === '127.0.0.1' || $ip === '::1' || filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false) {
+        return [
+            'country' => 'Local/Unknown',
+            'region' => 'Local/Unknown',
+            'city' => 'Local/Unknown'
+        ];
     }
 
-    // Fallback: Try ipinfo.io
-    $url2 = "https://ipinfo.io/" . $ip . "/json";
+    // Try multiple APIs with better error handling
+    $apis = [
+        [
+            'url' => "https://ip-api.com/json/" . $ip . "?fields=country,regionName,city,status,message",
+            'parser' => function($data) {
+                if (isset($data['status']) && $data['status'] === 'success') {
+                    return [
+                        'country' => $data['country'] ?? 'Unknown',
+                        'region' => $data['regionName'] ?? 'Unknown',
+                        'city' => $data['city'] ?? 'Unknown'
+                    ];
+                }
+                return null;
+            }
+        ],
+        [
+            'url' => "https://ipinfo.io/" . $ip . "/json",
+            'parser' => function($data) {
+                if (!isset($data['error']) && isset($data['country'])) {
+                    return [
+                        'country' => $data['country'] ?? 'Unknown',
+                        'region' => $data['region'] ?? 'Unknown',
+                        'city' => $data['city'] ?? 'Unknown'
+                    ];
+                }
+                return null;
+            }
+        ],
+        [
+            'url' => "https://api.ipgeolocation.io/ipgeo?apiKey=free&ip=" . $ip,
+            'parser' => function($data) {
+                if (!isset($data['message']) && isset($data['country_name'])) {
+                    return [
+                        'country' => $data['country_name'] ?? 'Unknown',
+                        'region' => $data['state_prov'] ?? 'Unknown',
+                        'city' => $data['city'] ?? 'Unknown'
+                    ];
+                }
+                return null;
+            }
+        ]
+    ];
 
-    $ch2 = curl_init();
-    curl_setopt($ch2, CURLOPT_URL, $url2);
-    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch2, CURLOPT_TIMEOUT, 10);
-    curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, true);
-    curl_setopt($ch2, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; PHP/8.0)');
+    foreach ($apis as $api) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $api['url']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 8); // Reduced timeout
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Allow self-signed certs
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; PHP-Geolocation/1.0)');
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
 
-    $response2 = curl_exec($ch2);
-    $http_code2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
-    curl_close($ch2);
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curl_error = curl_error($ch);
+        curl_close($ch);
 
-    if ($response2 && $http_code2 == 200) {
-        $data2 = json_decode($response2, true);
-        if ($data2 && !isset($data2['error'])) {
-            $location_parts = explode(', ', $data2['loc'] ?? '');
-            return [
-                'country' => $data2['country'] ?? 'Unknown',
-                'region' => $data2['region'] ?? 'Unknown',
-                'city' => $data2['city'] ?? 'Unknown'
-            ];
+        // Log API attempts for debugging
+        file_put_contents(__DIR__ . '/location_debug.log',
+            date('Y-m-d H:i:s') . " - IP: $ip, URL: {$api['url']}, HTTP: $http_code, Error: $curl_error\n",
+            FILE_APPEND);
+
+        if ($response && $http_code == 200 && !$curl_error) {
+            $data = json_decode($response, true);
+            if ($data && is_array($data)) {
+                $result = $api['parser']($data);
+                if ($result !== null) {
+                    // Log successful location
+                    file_put_contents(__DIR__ . '/location_debug.log',
+                        date('Y-m-d H:i:s') . " - SUCCESS: " . json_encode($result) . "\n",
+                        FILE_APPEND);
+                    return $result;
+                }
+            }
         }
+
+        // Small delay between API calls to avoid rate limits
+        usleep(100000); // 0.1 second
     }
 
-    // If both APIs fail, return unknown
+    // Log failure
+    file_put_contents(__DIR__ . '/location_debug.log',
+        date('Y-m-d H:i:s') . " - ALL APIs FAILED for IP: $ip\n",
+        FILE_APPEND);
+
+    // If all APIs fail, return unknown
     return [
         'country' => 'Unknown',
         'region' => 'Unknown',
